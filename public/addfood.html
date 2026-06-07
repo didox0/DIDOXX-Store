@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Add Food</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <nav class="side-nav">
+        <div class="nav-brand">DIDOX-KITCHEN</div>
+        <a href="index.html">Home</a>
+        <a href="restaurants.html">Restaurants</a>
+        <a href="orders.html">Orders</a>
+        <a href="cart.html">Cart</a>
+        <div class="nav-spacer"></div>
+        <a href="profile.html" id="profileAvatar" class="profile-avatar-link" style="display: none;">
+            <img src="https://via.placeholder.com/40?text=U" alt="Profile" class="profile-avatar">
+            <span class="profile-name" id="profileName" style="display:none"></span>
+        </a>
+        <a href="addfood.html" id="addFoodLink" style="display: none;">Add Food</a>
+        <a href="login.html" id="loginBtn">Login</a>
+        <a href="#" onclick="logoutUser(); return false;" id="logoutBtn">Logout</a>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>Add Food Item</h1>
+
+
+
+
+            <div class="form-container">
+
+                <input type="text" id="food_name" placeholder="Food Name">
+
+                <select id="category">
+                    <option value="Veg">Veg</option>
+                    <option value="Non-Veg">Non-Veg</option>
+                    <option value="Beverage">Beverage</option>
+                    <option value="Dessert">Dessert</option>
+                </select>
+
+                <input type="number" id="price" placeholder="Price">
+
+                <select id="restaurant_id">
+                    <option value="">Select Restaurant</option>
+                </select>
+
+                <input type="text" id="delivery_time" placeholder="Delivery Time">
+
+                <input type="file" id="food_image" accept="image/*">
+
+                <div class="button-row">
+                    <button type="button" onclick="addFood()">
+                        Add Food
+                    </button>
+                    <a href="admin.html" class="button secondary-button">Back to Admin</a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

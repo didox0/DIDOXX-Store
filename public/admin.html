@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin - Manage Site</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="side-nav">
+        <div class="nav-brand">DIDOX-KITCHEN</div>
+        <a href="index.html">Home</a>
+        <a href="restaurants.html">Restaurants</a>
+        <a href="orders.html">Orders</a>
+        <a href="cart.html">Cart</a>
+        <div class="nav-spacer"></div>
+        <a href="profile.html" id="profileAvatar" class="profile-avatar-link" style="display: none;">
+            <img src="https://via.placeholder.com/40?text=U" alt="Profile" class="profile-avatar">
+            <span class="profile-name" id="profileName" style="display:none"></span>
+        </a>
+        <a href="addfood.html" id="addFoodLink" style="display: none;">Add Food</a>
+        <a href="login.html" id="loginBtn">Login</a>
+        <a href="#" onclick="logoutUser(); return false;" id="logoutBtn">Logout</a>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+        <h1>Admin Panel</h1>
+
+    
+
+    <section>
+        <h2>Manage Restaurant</h2>
+        <div class="form-container">
+            <input type="text" id="admin_rest_name" placeholder="Restaurant Name">
+            <input type="text" id="admin_rest_location" placeholder="Location">
+            <input type="file" id="admin_rest_image" accept="image/*" onchange="handleRestaurantImageFile(event)">
+            <img id="admin_rest_preview" src="" alt="Preview" style="display:none; width:100%; max-width:320px; border-radius:16px; margin-top:14px;" />
+            <div class="form-actions">
+                <button id="addRestaurantBtn" onclick="addRestaurant()">Add Restaurant</button>
+                <button id="updateRestaurantBtn" onclick="updateRestaurant()" style="display:none;">Update Restaurant</button>
+                <button id="cancelRestaurantEditBtn" onclick="cancelRestaurantEdit()" style="display:none;">Cancel</button>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Foods</h2>
+        <div id="adminFoods" style="padding:20px"></div>
+    </section>
+
+    <section>
+        <h2>Restaurants</h2>
+        <div id="adminRestaurants" style="padding:20px"></div>
+    </section>
+
+    <section>
+        <h2>Users</h2>
+        <div id="adminUsers" style="padding:20px"></div>
+    </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

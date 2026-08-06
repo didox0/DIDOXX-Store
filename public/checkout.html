@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIDOXX Checkout</title>
+    <meta name="description" content="Checkout securely with premium delivery and payment options.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="checkout-page">
+    <header class="top-nav">
+        <a class="brand" href="index.html">DIDOXX</a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="bag.html">Cart</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="section-block checkout-shell">
+            <div class="checkout-form-card">
+                <h2>Shipping & Payment</h2>
+                <label for="delivery_name">Full Name</label>
+                <input id="delivery_name" type="text" placeholder="Your name">
+                <label for="delivery_phone">Phone</label>
+                <input id="delivery_phone" type="text" placeholder="Phone number">
+                <label for="delivery_address">Address</label>
+                <textarea id="delivery_address" rows="4" placeholder="Street, city, state"></textarea>
+                <div class="selector-group">
+                    <label>Payment Method</label>
+                    <div class="selector-list">
+                        <button class="selector-pill">Card</button>
+                        <button class="selector-pill">UPI</button>
+                        <button class="selector-pill">COD</button>
+                    </div>
+                </div>
+                <button class="button btn-primary" onclick="checkoutCart()">Place Order</button>
+            </div>
+            <div id="checkoutSummary"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

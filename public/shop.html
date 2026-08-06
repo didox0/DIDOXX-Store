@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIDOXX Shop</title>
+    <meta name="description" content="Shop DIDOXX premium streetwear. Minimal essentials, elevated outerwear, and modern footwear.">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="shop-page">
+    <header class="top-nav">
+        <a class="brand" href="index.html">DIDOXX</a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="shop.html" class="active">Shop</a>
+            <a href="purchases.html">Orders</a>
+            <a href="bag.html">Cart</a>
+            <a href="account.html">Account</a>
+        </nav>
+        <div class="nav-actions">
+            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
+            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="section-block shop-hero-shell">
+            <div class="shop-hero-copy">
+                <p class="hero-label">Curated capsule • Premium essentials</p>
+                <h1>Discover the new season edit.</h1>
+                <p>Refined tailoring, sculpted layers, and statement pieces built for a modern wardrobe.</p>
+            </div>
+            <div class="shop-hero-card">
+                <div class="stat-pill">Free Express Shipping</div>
+                <div class="stat-pill">Limited Release</div>
+                <div class="stat-pill">Secure Checkout</div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="shop-layout">
+                <aside class="filter-panel">
+                    <h3>Filters</h3>
+                    <label for="shopSearch">Search styles</label>
+                    <input id="shopSearch" type="search" placeholder="Search look" oninput="filterShopProducts()">
+
+                    <label>Category</label>
+                    <div class="filter-row" id="categoryFilters">
+                        <button class="filter-pill active" type="button" data-category="All" onclick="selectShopCategory('All', this)">All</button>
+                        <button class="filter-pill" type="button" data-category="Hoodies" onclick="selectShopCategory('Hoodies', this)">Hoodies</button>
+                        <button class="filter-pill" type="button" data-category="Tees" onclick="selectShopCategory('Tees', this)">Tees</button>
+                        <button class="filter-pill" type="button" data-category="Jeans" onclick="selectShopCategory('Jeans', this)">Jeans</button>
+                        <button class="filter-pill" type="button" data-category="Sneakers" onclick="selectShopCategory('Sneakers', this)">Sneakers</button>
+                        <button class="filter-pill" type="button" data-category="Accessories" onclick="selectShopCategory('Accessories', this)">Accessories</button>
+                    </div>
+
+                    <label for="sortSelect">Sort</label>
+                    <select id="sortSelect" onchange="filterShopProducts()">
+                        <option value="newest">Newest</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="popularity">Popularity</option>
+                    </select>
+                </aside>
+
+                <div>
+                    <div class="shop-toolbar">
+                        <p id="shopResultsMeta">Loading collection…</p>
+                        <div class="hero-actions">
+                            <button class="button btn-primary" onclick="loadShopProducts()">Refresh</button>
+                            <button class="button secondary" onclick="window.location.href='index.html'">Back</button>
+                        </div>
+                    </div>
+                    <div id="productGrid" class="product-grid"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="quickViewModal" class="modal-backdrop" onclick="closeQuickView(event)">
+        <div class="modal-panel" onclick="event.stopPropagation();">
+            <button class="modal-close" onclick="closeQuickView(event)" aria-label="Close">✕</button>
+            <div class="modal-grid">
+                <div class="modal-media">
+                    <img id="quickViewImage" src="" alt="Product image">
+                </div>
+                <div class="modal-info">
+                    <p class="product-tag" id="quickViewLabel"></p>
+                    <h2 id="quickViewTitle"></h2>
+                    <p id="quickViewBrand" class="product-brand"></p>
+                    <div class="price-row">
+                        <span class="price-current" id="quickViewPrice"></span>
+                        <span class="price-old" id="quickViewOldPrice"></span>
+                    </div>
+                    <p id="quickViewDescription"></p>
+                    <div class="selector-group">
+                        <label>Choose Size</label>
+                        <div id="quickViewSizes" class="selector-list"></div>
+                    </div>
+                    <div class="selector-group">
+                        <label>Choose Color</label>
+                        <div id="quickViewColors" class="selector-list"></div>
+                    </div>
+                    <div class="selector-group">
+                        <label>Quantity</label>
+                        <div class="selector-list">
+                            <button class="selector-pill" onclick="adjustQuickViewQuantity(-1)">-</button>
+                            <span id="quickViewQuantity">1</span>
+                            <button class="selector-pill" onclick="adjustQuickViewQuantity(1)">+</button>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="button btn-primary" id="quickViewAddButton">Add to Cart</button>
+                        <button class="button secondary" id="quickViewWishlistButton">Add to Wishlist</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

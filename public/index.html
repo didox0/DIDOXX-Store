@@ -1,46 +1,209 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>DIDOX-KITCHEN</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIDOXX | Premium Streetwear</title>
+    <meta name="description" content="DIDOXX premium streetwear. Elevate your wardrobe with luxury essentials, limited drops, and modern essentials.">
+    <meta property="og:title" content="DIDOXX | Premium Streetwear">
+    <meta property="og:description" content="Luxury streetwear for the modern wardrobe. Shop the latest premium collection from DIDOXX.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80">
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-    <h1>DIDOX-KITCHEN</h1>
-
-    <nav class="side-nav">
-        <div class="nav-brand">DIDOX-KITCHEN</div>
-        <a href="index.html">Home</a>
-        <a href="restaurants.html">Restaurants</a>
-        <a href="orders.html">Orders</a>
-        <a href="cart.html">Cart</a>
-        <div class="nav-spacer"></div>
-        <a href="profile.html" id="profileAvatar" class="profile-avatar-link" style="display: none;">
-            <img src="https://via.placeholder.com/40?text=U" alt="Profile" class="profile-avatar">
-            <span class="profile-name" id="profileName" style="display:none"></span>
-        </a>
-        <a href="addfood.html" id="addFoodLink" style="display: none;">Add Food</a>
-        <a href="login.html" id="loginBtn">Login</a>
-        <a href="#" onclick="logoutUser(); return false;" id="logoutBtn">Logout</a>
-    </nav>
+<body class="page-shell home-page">
+    <header class="top-nav home-nav">
+        <a class="brand" href="index.html">DIDOXX</a>
+        <nav class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="purchases.html">Orders</a>
+            <a href="bag.html">Cart</a>
+            <a href="account.html">Account</a>
+        </nav>
+        <div class="nav-actions">
+            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
+            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        </div>
+    </header>
 
     <main class="main-content">
-        <h2>Food Items</h2>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search Foods..." onkeyup="searchFoods()">
-        </div>
+        <section class="hero hero-premium">
+            <div class="hero-content hero-stack">
+                <div class="hero-copy-block">
+                    <span class="hero-label">Luxury Clothing • Limited Release</span>
+                    <h1 class="hero-title">Wear Beyond Ordinary.</h1>
+                    <p class="hero-copy">Minimal tailoring, sharp silhouettes, and elevated essentials designed for the modern wardrobe.</p>
+                    <div class="hero-actions">
+                        <a href="shop.html" class="button btn-primary">Shop the Drop</a>
+                        <a href="#featured" class="button secondary">Explore Collection</a>
+                    </div>
+                </div>
+                <div class="hero-panel">
+                    <p class="panel-eyebrow">New Season Edit</p>
+                    <h3>Precision-crafted layers for everyday confidence.</h3>
+                    <ul>
+                        <li>Free express shipping</li>
+                        <li>Premium cotton and wool blends</li>
+                        <li>Limited capsule release</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-        <div class="filter-box">
-            <button class="filter-button active" onclick="filterFoods('All', this)">All</button>
-            <button class="filter-button" onclick="filterFoods('Veg', this)">Veg</button>
-            <button class="filter-button" onclick="filterFoods('Non-Veg', this)">Non-Veg</button>
-            <button class="filter-button" onclick="filterFoods('Beverage', this)">Beverage</button>
-            <button class="filter-button" onclick="filterFoods('Dessert', this)">Dessert</button>
-        </div>
+        <section class="section-block manifesto-row">
+            <div class="manifesto-card">
+                <span class="eyebrow">Crafted for Modern Living</span>
+                <h3>Quiet luxury with sculpted structure and effortless balance.</h3>
+            </div>
+            <div class="manifesto-card muted-card">
+                <p>Elevated staples, refined textures, and a wardrobe that transitions from city mornings to late-night plans.</p>
+            </div>
+        </section>
 
-        <div id="foodList"></div>
+        <section id="featured" class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Featured Collection</h2>
+                    <p class="section-subtle">The season’s most coveted pieces curated for sharp, elevated dressing.</p>
+                </div>
+                <a href="shop.html" class="text-link">View All</a>
+            </div>
+            <div id="featuredGrid" class="product-grid"></div>
+        </section>
+
+        <section class="section-block split-grid">
+            <div class="showcase-card large-card">
+                <p class="eyebrow">Why DIDOXX</p>
+                <h3>Premium essentials shaped with intention.</h3>
+                <p>Every piece is designed to feel precise, timeless, and comfortable without compromising on impact.</p>
+            </div>
+            <div class="showcase-card stats-card">
+                <div class="stat-pill">24h Dispatch</div>
+                <div class="stat-pill">Global Shipping</div>
+                <div class="stat-pill">Luxury Packaging</div>
+                <div class="stat-pill">Secure Checkout</div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Best Sellers</h2>
+                    <p class="section-subtle">Our most loved staples built for everyday versatility and elevated comfort.</p>
+                </div>
+            </div>
+            <div id="arrivalGrid" class="product-grid"></div>
+        </section>
+
+        <section class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Signature Brands</h2>
+                    <p class="section-subtle">Explore the premium houses and refined labels shaping the DIDOXX experience.</p>
+                </div>
+            </div>
+            <div id="brandGrid" class="product-grid brand-grid"></div>
+        </section>
+
+        <section class="section-block testimonial-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Customer Notes</h2>
+                    <p class="section-subtle">Our community continues to choose DIDOXX for its effortless fit and understated luxury.</p>
+                </div>
+            </div>
+            <div class="review-grid">
+                <article class="review-card">
+                    <p>“The quality feels premium from the first wear. It looks expensive without trying too hard.”</p>
+                    <strong>— Maya, London</strong>
+                </article>
+                <article class="review-card">
+                    <p>“Clean silhouettes, smooth delivery, and the packaging feels like a boutique experience.”</p>
+                    <strong>— Daniel, New York</strong>
+                </article>
+                <article class="review-card">
+                    <p>“A true modern wardrobe upgrade. Everything feels considered and timeless.”</p>
+                    <strong>— Sofia, Milan</strong>
+                </article>
+            </div>
+        </section>
+
+        <footer class="footer home-footer">
+            <div class="footer-grid">
+                <div>
+                    <h4>About</h4>
+                    <p>DIDOXX is a premium clothing label for modern wardrobes with refined ease, minimal design, and elevated finishes.</p>
+                </div>
+                <div>
+                    <h4>Explore</h4>
+                    <a href="shop.html">Shop</a>
+                    <a href="purchases.html">Orders</a>
+                    <a href="bag.html">Cart</a>
+                    <a href="account.html">Account</a>
+                </div>
+                <div>
+                    <h4>Support</h4>
+                    <a href="#">Shipping</a>
+                    <a href="#">Returns</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="newsletter">
+                    <h4>Newsletter</h4>
+                    <p>Join the release list for exclusive drops and private capsule previews.</p>
+                    <input type="email" placeholder="Your email address">
+                    <button class="button btn-primary">Subscribe</button>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 DIDOXX. All rights reserved.</span>
+                <span>Designed for premium fashion.</span>
+            </div>
+        </footer>
     </main>
+
+    <div id="quickViewModal" class="modal-backdrop" onclick="closeQuickView(event)">
+        <div class="modal-panel" onclick="event.stopPropagation();">
+            <button class="modal-close" onclick="closeQuickView(event)" aria-label="Close">✕</button>
+            <div class="modal-grid">
+                <div class="modal-media">
+                    <img id="quickViewImage" src="" alt="Product image">
+                </div>
+                <div class="modal-info">
+                    <p class="product-tag" id="quickViewLabel"></p>
+                    <h2 id="quickViewTitle"></h2>
+                    <p id="quickViewBrand" class="product-brand"></p>
+                    <div class="price-row">
+                        <span class="price-current" id="quickViewPrice"></span>
+                        <span class="price-old" id="quickViewOldPrice"></span>
+                    </div>
+                    <p id="quickViewDescription"></p>
+                    <div class="selector-group">
+                        <label>Choose Size</label>
+                        <div id="quickViewSizes" class="selector-list"></div>
+                    </div>
+                    <div class="selector-group">
+                        <label>Choose Color</label>
+                        <div id="quickViewColors" class="selector-list"></div>
+                    </div>
+                    <div class="selector-group">
+                        <label>Quantity</label>
+                        <div class="selector-list">
+                            <button class="selector-pill" onclick="adjustQuickViewQuantity(-1)">-</button>
+                            <span id="quickViewQuantity">1</span>
+                            <button class="selector-pill" onclick="adjustQuickViewQuantity(1)">+</button>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="button btn-primary" id="quickViewAddButton">Add to Cart</button>
+                        <button class="button secondary" id="quickViewWishlistButton">Add to Wishlist</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

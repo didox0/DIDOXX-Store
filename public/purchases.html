@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIDOXX Orders</title>
+    <meta name="description" content="Track your DIDOXX order history, statuses, and delivery updates.">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="orders-page">
+    <header class="top-nav">
+        <a class="brand" href="index.html">DIDOXX</a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="purchases.html" class="active">Orders</a>
+            <a href="bag.html">Cart</a>
+            <a href="account.html">Account</a>
+        </nav>
+        <div class="nav-actions">
+            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
+            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Order Tracking</h2>
+                    <p class="section-subtle">Stay updated with every purchase. See your order progress, delivery status, and tracking information in one place.</p>
+                </div>
+            </div>
+            <div id="orderStats" class="grid-col" style="grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px;"></div>
+            <div id="orderList"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product | DIDOXX Admin</title>
+    <meta name="description" content="Admin product entry page for the DIDOXX fashion brand.">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="admin-page">
+    <header class="top-nav">
+        <a class="brand" href="index.html">DIDOXX</a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="purchases.html">Orders</a>
+            <a href="bag.html">Cart</a>
+            <a href="account.html">Account</a>
+        </nav>
+        <div class="nav-actions">
+            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
+            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="section-block">
+            <div class="section-heading">
+                <div>
+                    <h2>Add New Product</h2>
+                    <p class="section-subtle">Create a new DIDOXX product with premium styling, brand, and inventory details.</p>
+                </div>
+            </div>
+            <div class="form-container">
+                <input type="text" id="product_name" placeholder="Product Name">
+                <input type="text" id="category" placeholder="Category (Hoodies, Tees, Jeans, Sneakers, Accessories)">
+                <input type="number" id="price" placeholder="Price">
+                <input type="number" id="discount" placeholder="Discount %" min="0" max="100">
+                <input type="number" id="stock" placeholder="Stock quantity">
+                <input type="text" id="sizes" placeholder="Sizes (S,M,L,XL)">
+                <input type="text" id="colors" placeholder="Colors (Black,White,Grey)">
+                <input type="text" id="collection" placeholder="Collection (New Arrivals, Essentials)">
+                <select id="brand_id">
+                    <option value="">Select Brand</option>
+                </select>
+                <input type="file" id="product_image" accept="image/*">
+                <div class="button-row">
+                    <button type="button" onclick="addProduct()">Add Product</button>
+                    <a href="dashboard.html" class="button secondary">Back to Admin</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

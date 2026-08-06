@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,16 +12,25 @@
 <body class="orders-page">
     <header class="top-nav">
         <a class="brand" href="index.html">DIDOXX</a>
-        <nav class="nav-links">
+        <nav class="nav-links" id="mainNavLinks">
             <a href="index.html">Home</a>
             <a href="shop.html">Shop</a>
-            <a href="purchases.html" class="active">Orders</a>
+            <a href="purchases.html" class="active auth-required" style="display:none;">Orders</a>
+            <a href="wishlist.html" class="auth-required" style="display:none;">Wishlist</a>
             <a href="bag.html">Cart</a>
-            <a href="account.html">Account</a>
         </nav>
-        <div class="nav-actions">
-            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
-            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        <div class="nav-actions" id="navAuthActions">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><span class="theme-icon">🌙</span></button>
+            <div class="guest-only">
+                <a href="signin.html" class="text-link">Sign In</a>
+                <a href="signup.html" class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;">Sign Up</a>
+            </div>
+            <div class="member-only" style="display:none; align-items: center; gap: 12px;">
+                <span id="navUserName" style="font-size: 0.9rem; font-weight: 600;"></span>
+                <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
+                <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+                <button class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;" onclick="logoutUser()">Logout</button>
+            </div>
         </div>
     </header>
 

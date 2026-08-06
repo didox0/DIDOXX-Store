@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,16 +12,25 @@
 <body class="profile-page">
     <header class="top-nav">
         <a class="brand" href="index.html">DIDOXX</a>
-        <nav class="nav-links">
+        <nav class="nav-links" id="mainNavLinks">
             <a href="index.html">Home</a>
             <a href="shop.html">Shop</a>
-            <a href="purchases.html">Orders</a>
+            <a href="purchases.html" class="auth-required" style="display:none;">Orders</a>
+            <a href="wishlist.html" class="auth-required" style="display:none;">Wishlist</a>
             <a href="bag.html">Cart</a>
-            <a href="account.html" class="active">Account</a>
         </nav>
-        <div class="nav-actions">
-            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
-            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        <div class="nav-actions" id="navAuthActions">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><span class="theme-icon">🌙</span></button>
+            <div class="guest-only">
+                <a href="signin.html" class="text-link">Sign In</a>
+                <a href="signup.html" class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;">Sign Up</a>
+            </div>
+            <div class="member-only" style="display:none; align-items: center; gap: 12px;">
+                <span id="navUserName" style="font-size: 0.9rem; font-weight: 600;"></span>
+                <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
+                <a class="icon-button active" href="account.html" aria-label="Account">👤</a>
+                <button class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;" onclick="logoutUser()">Logout</button>
+            </div>
         </div>
     </header>
 
@@ -36,7 +45,7 @@
                     <div class="profile-card">
                         <div class="profile-pic-wrapper">
                             <img id="profilePicDisplay" class="profile-pic" src="https://via.placeholder.com/240?text=DIDOXX" alt="Profile picture">
-                            <label class="profile-pic-label" for="profile_pic_input">+</label>
+                            <label class="profile-pic-label" for="profile_pic_input">Change</label>
                             <input type="file" id="profile_pic_input" accept="image/*" onchange="handleProfilePicChange(event)">
                         </div>
                         <div>
@@ -52,7 +61,7 @@
                         </div>
                         <div class="form-group">
                             <label>Email address</label>
-                            <div id="emailDisplay" class="email-display">Loading…</div>
+                            <div id="emailDisplay" class="email-display"></div>
                         </div>
                         <div class="form-group">
                             <label for="profile_phone">Phone number</label>

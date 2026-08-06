@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,16 +12,25 @@
 <body class="shop-page">
     <header class="top-nav">
         <a class="brand" href="index.html">DIDOXX</a>
-        <nav class="nav-links">
+        <nav class="nav-links" id="mainNavLinks">
             <a href="index.html">Home</a>
             <a href="shop.html" class="active">Shop</a>
-            <a href="purchases.html">Orders</a>
+            <a href="purchases.html" class="auth-required" style="display:none;">Orders</a>
+            <a href="wishlist.html" class="auth-required" style="display:none;">Wishlist</a>
             <a href="bag.html">Cart</a>
-            <a href="account.html">Account</a>
         </nav>
-        <div class="nav-actions">
-            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
-            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        <div class="nav-actions" id="navAuthActions">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><span class="theme-icon">🌙</span></button>
+            <div class="guest-only">
+                <a href="signin.html" class="text-link">Sign In</a>
+                <a href="signup.html" class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;">Sign Up</a>
+            </div>
+            <div class="member-only" style="display:none; align-items: center; gap: 12px;">
+                <span id="navUserName" style="font-size: 0.9rem; font-weight: 600;"></span>
+                <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
+                <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+                <button class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;" onclick="logoutUser()">Logout</button>
+            </div>
         </div>
     </header>
 
@@ -42,39 +51,65 @@
         <section class="section-block">
             <div class="shop-layout">
                 <aside class="filter-panel">
-                    <h3>Filters</h3>
-                    <label for="shopSearch">Search styles</label>
-                    <input id="shopSearch" type="search" placeholder="Search look" oninput="filterShopProducts()">
+    <h3>Filters</h3>
+    <label for="shopSearch">Search styles</label>
+    <input id="shopSearch" type="search" placeholder="Search look" oninput="filterShopProducts()">
 
-                    <label>Category</label>
-                    <div class="filter-row" id="categoryFilters">
-                        <button class="filter-pill active" type="button" data-category="All" onclick="selectShopCategory('All', this)">All</button>
-                        <button class="filter-pill" type="button" data-category="Hoodies" onclick="selectShopCategory('Hoodies', this)">Hoodies</button>
-                        <button class="filter-pill" type="button" data-category="Tees" onclick="selectShopCategory('Tees', this)">Tees</button>
-                        <button class="filter-pill" type="button" data-category="Jeans" onclick="selectShopCategory('Jeans', this)">Jeans</button>
-                        <button class="filter-pill" type="button" data-category="Sneakers" onclick="selectShopCategory('Sneakers', this)">Sneakers</button>
-                        <button class="filter-pill" type="button" data-category="Accessories" onclick="selectShopCategory('Accessories', this)">Accessories</button>
-                    </div>
+    <label>Category</label>
+    <div class="filter-row" id="categoryFilters">
+        <button class="filter-pill active" type="button" data-category="All" onclick="selectShopCategory('All', this)">All</button>
+        <button class="filter-pill" type="button" data-category="Hoodies" onclick="selectShopCategory('Hoodies', this)">Hoodies</button>
+        <button class="filter-pill" type="button" data-category="Tees" onclick="selectShopCategory('Tees', this)">Tees</button>
+        <button class="filter-pill" type="button" data-category="Jeans" onclick="selectShopCategory('Jeans', this)">Jeans</button>
+        <button class="filter-pill" type="button" data-category="Sneakers" onclick="selectShopCategory('Sneakers', this)">Sneakers</button>
+        <button class="filter-pill" type="button" data-category="Accessories" onclick="selectShopCategory('Accessories', this)">Accessories</button>
+    </div>
 
-                    <label for="sortSelect">Sort</label>
-                    <select id="sortSelect" onchange="filterShopProducts()">
-                        <option value="newest">Newest</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                        <option value="popularity">Popularity</option>
-                    </select>
-                </aside>
+    <label for="brandFilters">Brand</label>
+    <div class="filter-row" id="brandFilters"></div>
+
+    <label for="priceSlider">Price</label>
+    <input id="priceSlider" type="range" min="0" max="500" step="10" value="500" oninput="filterShopProducts()">
+    <span id="priceValue">$0 – $500</span>
+
+    <label for="sizeFilters">Size</label>
+    <div class="filter-row" id="sizeFilters"></div>
+
+    <label for="colorFilters">Color</label>
+    <div class="filter-row" id="colorFilters"></div>
+
+    <label for="sortSelect">Sort</label>
+    <select id="sortSelect" onchange="filterShopProducts()">
+        <option value="newest">Newest</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="popularity">Popularity</option>
+    </select>
+</aside>
 
                 <div>
-                    <div class="shop-toolbar">
-                        <p id="shopResultsMeta">Loading collection…</p>
-                        <div class="hero-actions">
-                            <button class="button btn-primary" onclick="loadShopProducts()">Refresh</button>
-                            <button class="button secondary" onclick="window.location.href='index.html'">Back</button>
-                        </div>
-                    </div>
-                    <div id="productGrid" class="product-grid"></div>
-                </div>
+    <div class="shop-toolbar">
+        <p id="shopResultsMeta">Loading collection…</p>
+        <div class="hero-actions">
+            <button class="button btn-primary" onclick="loadShopProducts()">Refresh</button>
+            <button class="button secondary" onclick="window.location.href='index.html'">Back</button>
+        </div>
+    </div>
+    <div id="productGrid" class="product-grid">
+        <!-- Skeleton placeholders while loading -->
+        <div class="skeleton-card">
+            <div class="skeleton-img" style="height:200px; margin-bottom:12px;"></div>
+            <div class="skeleton-text" style="height:16px; width:60%; margin-bottom:8px;"></div>
+            <div class="skeleton-text" style="height:14px; width:40%;"></div>
+        </div>
+        <div class="skeleton-card">
+            <div class="skeleton-img" style="height:200px; margin-bottom:12px;"></div>
+            <div class="skeleton-text" style="height:16px; width:70%; margin-bottom:8px;"></div>
+            <div class="skeleton-text" style="height:14px; width:50%;"></div>
+        </div>
+    </div>
+    <div id="pagination" class="pagination"></div>
+</div>
             </div>
         </section>
     </main>

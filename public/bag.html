@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,16 +12,25 @@
 <body class="cart-page">
     <header class="top-nav">
         <a class="brand" href="index.html">DIDOXX</a>
-        <nav class="nav-links">
+        <nav class="nav-links" id="mainNavLinks">
             <a href="index.html">Home</a>
             <a href="shop.html">Shop</a>
-            <a href="purchases.html">Orders</a>
+            <a href="purchases.html" class="auth-required" style="display:none;">Orders</a>
+            <a href="wishlist.html" class="auth-required" style="display:none;">Wishlist</a>
             <a href="bag.html" class="active">Cart</a>
-            <a href="account.html">Account</a>
         </nav>
-        <div class="nav-actions">
-            <a class="icon-button" href="bag.html" aria-label="Cart">🛒</a>
-            <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+        <div class="nav-actions" id="navAuthActions">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><span class="theme-icon">🌙</span></button>
+            <div class="guest-only">
+                <a href="signin.html" class="text-link">Sign In</a>
+                <a href="signup.html" class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;">Sign Up</a>
+            </div>
+            <div class="member-only" style="display:none; align-items: center; gap: 12px;">
+                <span id="navUserName" style="font-size: 0.9rem; font-weight: 600;"></span>
+                <a class="icon-button active" href="bag.html" aria-label="Cart">🛒</a>
+                <a class="icon-button" href="account.html" aria-label="Account">👤</a>
+                <button class="button secondary btn-sm" style="min-height: 36px; padding: 0 16px; font-size: 0.85rem;" onclick="logoutUser()">Logout</button>
+            </div>
         </div>
     </header>
 
@@ -39,14 +48,14 @@
                     <div class="shadow-box">
                         <h3>Summary</h3>
                         <div class="summary-line"><span>Subtotal</span><strong id="cartSubtotal">$0.00</strong></div>
-                        <div class="summary-line"><span>Shipping</span><strong>$0.00</strong></div>
-                        <div class="summary-line"><span>Estimated tax</span><strong>$0.00</strong></div>
-                        <div class="summary-total"><span>Total</span><strong id="cartTotal">$0.00</strong></div>
+        <div class="summary-line"><span>Discount</span><strong id="cartDiscount">$0.00</strong></div>
+        <div class="summary-line"><span>Shipping</span><strong id="cartShipping">$0.00</strong></div>
+        <div class="summary-line"><span>Estimated tax</span><strong id="cartTax">$0.00</strong></div>
                     </div>
                     <div class="shadow-box promo-row">
                         <label for="couponCode">Promo Code</label>
                         <input id="couponCode" type="text" placeholder="Enter promo code">
-                        <button class="button secondary" onclick="showToast('Coupon applied')">Apply</button>
+                        <button class="button secondary" onclick="applyCoupon()">Apply</button>
                     </div>
                     <a href="checkout.html" class="button btn-primary">Proceed to Checkout</a>
                 </aside>

@@ -4,6 +4,110 @@ let orderFilterState = 'in-process';
 let activeQuickViewProduct = null;
 let quickViewQuantity = 1;
 
+// Initialize Theme
+(function() {
+    const savedTheme = localStorage.getItem('didoxx_theme');
+    if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+})();
+
+function toggleTheme() {
+    const root = document.documentElement;
+    const isLight = root.getAttribute('data-theme') === 'light';
+    
+    if (isLight) {
+        root.removeAttribute('data-theme');
+        localStorage.setItem('didoxx_theme', 'dark');
+    } else {
+        root.setAttribute('data-theme', 'light');
+        localStorage.setItem('didoxx_theme', 'light');
+    }
+    
+    updateThemeIcons();
+}
+
+function updateThemeIcons() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const icons = document.querySelectorAll('.theme-toggle .theme-icon');
+    icons.forEach(icon => {
+        // If light theme, show moon (to switch to dark). If dark theme, show sun.
+        icon.textContent = isLight ? '🌙' : '☀️';
+    });
+}async function updateNavBar() {
+    try {
+        const response = await fetch(`${API}/checklogin`, { credentials: 'include' });
+        const userData = await response.json();
+        
+        const authRequiredLinks = document.querySelectorAll('.auth-required');
+        const guestOnly = document.querySelectorAll('.guest-only');
+        const memberOnly = document.querySelectorAll('.member-only');
+        const navUserName = document.getElementById('navUserName');
+
+        if (userData.loggedIn) {
+            authRequiredLinks.forEach(el => el.style.display = 'inline-block');
+            guestOnly.forEach(el => el.style.display = 'none');
+            memberOnly.forEach(el => el.style.display = 'flex');
+            if (navUserName) {
+                navUserName.textContent = userData.user ? (userData.user.name || 'Member') : 'Member';
+            }
+        } else {
+            authRequiredLinks.forEach(el => el.style.display = 'none');
+            guestOnly.forEach(el => el.style.display = 'block');
+            memberOnly.forEach(el => el.style.display = 'none');
+            
+            const protectedPages = ['account.html', 'purchases.html', 'wishlist.html'];
+            if (protectedPages.some(page => window.location.pathname.includes(page))) {
+                window.location.href = 'signin.html';
+            }
+        }
+    } catch (e) {
+        console.error('updateNavBar error', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateNavBar();
+    updateThemeIcons();
+    if (window.location.pathname.includes('account.html')) {
+        loadUserProfile();
+    }
+});
+
+async function loginUser() {
+    const emailEl = document.getElementById('login_email');
+    const passwordEl = document.getElementById('login_password');
+    if (!emailEl || !passwordEl) return;
+    
+    try {
+        const response = await fetch(`${API}/login`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailEl.value, password: passwordEl.value })
+        });
+        const result = await response.json();
+        
+        if (response.ok) {
+            window.location.href = 'account.html';
+        } else {
+            showToast(result.message || 'Login failed', 'error');
+        }
+    } catch (e) {
+        console.log('Login error', e);
+        showToast('Login failed', 'error');
+    }
+}
+
+async function logoutUser() {
+    try {
+        await fetch(`${API}/logout`, { credentials: 'include' });
+        window.location.href = 'index.html';
+    } catch (e) {
+        console.log('Logout error', e);
+    }
+}
+
 function escapeHtml(value) {
     return String(value || '')
         .replace(/&/g, '&amp;')
@@ -72,7 +176,7 @@ function initCartPage() {
     if (!cartItems && !summaryPanel) return;
 
     updateCartCount();
-    loadCart();
+    renderCartItems();
     renderRecommendedProducts();
 }
 
@@ -639,9 +743,9 @@ async function loadAdminDashboardData() {
         const revenue = (products || []).reduce((sum, p) => sum + Number(p.final_price ?? p.sale_price ?? p.price ?? 0), 0);
         statsGrid.innerHTML = `
             <article class="stat-card"><h3>Revenue</h3><p>$${revenue.toFixed(2)}</p></article>
-            <article class="stat-card"><h3>Products</h3><p>${(products || []).length}</p></article>
-            <article class="stat-card"><h3>Brands</h3><p>${(brands || []).length}</p></article>
-            <article class="stat-card"><h3>Customers</h3><p>${(users || []).length}</p></article>
+            <article class="stat-card"><h3>Products</h3><p>${Array.isArray(products) ? products.length : 0}</p></article>
+            <article class="stat-card"><h3>Brands</h3><p>${Array.isArray(brands) ? brands.length : 0}</p></article>
+            <article class="stat-card"><h3>Customers</h3><p>${Array.isArray(users) ? users.length : 0}</p></article>
         `;
     } catch (error) {
         console.log('Admin dashboard error', error);
@@ -747,6 +851,133 @@ function updateCartCount() {
         cartNavLink.innerHTML = `🛒 Cart`;
     }
 }
+
+// Helper to persist cart array
+function persistCart(cart) {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+}
+
+// Render cart items dynamically
+function renderCartItems() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const container = document.getElementById('cartItems');
+    if (!container) return;
+    if (!cart.length) {
+        container.innerHTML = '<p class="section-subtle">Your bag is empty.</p>';
+        return;
+    }
+    container.innerHTML = cart.map(item => {
+        const image = item.image || item.image_url || 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80';
+        const price = Number(item.price || item.final_price || item.sale_price || 0).toFixed(2);
+        return `
+        <div class="cart-card">
+            <div class="cart-item" id="cart-item-${item.id}">
+                <img src="${image}" alt="${escapeHtml(item.name)}" />
+                <div class="cart-item-info">
+                    <h3>${escapeHtml(item.name)}</h3>
+                    <p class="product-price">$${price}</p>
+                </div>
+                <div class="cart-item-actions">
+                    <div class="quantity-chip">
+                        <button aria-label="Decrease quantity" onclick="adjustQuantity('${item.id}', -1)">-</button>
+                        <span id="qty-${item.id}">${item.quantity}</span>
+                        <button aria-label="Increase quantity" onclick="adjustQuantity('${item.id}', 1)">+</button>
+                    </div>
+                    <button class="button secondary" onclick="removeCartItem('${item.id}')">Remove</button>
+                    <button class="button secondary" onclick="saveForLater('${item.id}')">Save for later</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+    updateCartSummary();
+}
+
+function adjustQuantity(itemId, delta) {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const idx = cart.findIndex(i => String(i.id) === String(itemId));
+    if (idx === -1) return;
+    const newQty = Math.max(1, cart[idx].quantity + delta);
+    cart[idx].quantity = newQty;
+    persistCart(cart);
+    const qtyNode = document.getElementById(`qty-${itemId}`);
+    if (qtyNode) qtyNode.textContent = newQty;
+    // Re‑render to reflect any changes in layout
+    renderCartItems();
+}
+
+function removeCartItem(itemId) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart = cart.filter(i => String(i.id) !== String(itemId));
+    persistCart(cart);
+    renderCartItems();
+    showToast('Item removed from cart');
+}
+
+function saveForLater(itemId) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const idx = cart.findIndex(i => String(i.id) === String(itemId));
+    if (idx === -1) return;
+    const item = cart.splice(idx, 1)[0];
+    persistCart(cart);
+    const saved = JSON.parse(localStorage.getItem('savedCart')) || [];
+    saved.push(item);
+    localStorage.setItem('savedCart', JSON.stringify(saved));
+    renderCartItems();
+    showToast('Item saved for later');
+}
+
+function applyCoupon() {
+    const codeEl = document.getElementById('couponCode');
+    if (!codeEl) return;
+    const code = codeEl.value.trim().toUpperCase();
+    // Simple mock validation – only SAVE10 works
+    if (code === 'SAVE10') {
+        const discount = 0.10; // 10% off
+        localStorage.setItem('coupon', JSON.stringify({code, discount}));
+        showToast('Coupon applied: 10% off');
+    } else {
+        localStorage.removeItem('coupon');
+        showToast('Invalid coupon code');
+    }
+    updateCartSummary();
+}
+
+function estimateShipping(subtotal) {
+    // Flat $24 shipping, free over $200
+    return subtotal >= 200 ? 0 : 24;
+}
+
+function updateCartSummary() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const subtotal = cart.reduce((sum, i) => sum + (Number(i.price || i.final_price || i.sale_price || 0) * i.quantity), 0);
+    const couponInfo = JSON.parse(localStorage.getItem('coupon')) || null;
+    const discountAmount = couponInfo ? subtotal * couponInfo.discount : 0;
+    const shipping = estimateShipping(subtotal - discountAmount);
+    const tax = 0; // Placeholder for future tax logic
+    const total = subtotal - discountAmount + shipping + tax;
+
+    const subtotalEl = document.getElementById('cartSubtotal');
+    const discountEl = document.getElementById('cartDiscount');
+    const shippingEl = document.querySelector('.cart-summary .summary-line:nth-child(2) strong');
+    const totalEl = document.getElementById('cartTotal');
+
+    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    if (discountEl) discountEl.textContent = `-$${discountAmount.toFixed(2)}`;
+    if (shippingEl) shippingEl.textContent = `$${shipping.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+}
+
+// Hook into cart page init – already calls renderCartItems via initCartPage
+function initCartPage() {
+    const cartItems = document.getElementById('cartItems');
+    const summaryPanel = document.getElementById('cartSummary');
+    if (!cartItems && !summaryPanel) return;
+    updateCartCount();
+    renderCartItems();
+    renderRecommendedProducts();
+}
+
 
 
 
@@ -2493,9 +2724,12 @@ async function loadUserProfile() {
             return;
         }
         const user = await response.json();
+        
+        // Load extended profile info from localStorage for fields not in DB
+        const extendedProfile = JSON.parse(localStorage.getItem(`profile_${user.id}`)) || {};
 
         const nameEl = document.getElementById('profile_name');
-        if (nameEl) nameEl.value = user.customer_name || '';
+        if (nameEl) nameEl.value = user.name || ''; // fixed property name
 
         const emailEl = document.getElementById('profile_email');
         if (emailEl) emailEl.value = user.email || '';
@@ -2504,15 +2738,15 @@ async function loadUserProfile() {
         if (phoneEl) phoneEl.value = user.phone || '';
 
         const addressEl = document.getElementById('profile_address');
-        if (addressEl) addressEl.value = user.address || '';
+        if (addressEl) addressEl.value = extendedProfile.address || '';
 
         const emailDispEl = document.getElementById('emailDisplay');
         if (emailDispEl) emailDispEl.textContent = user.email || '';
 
-        if (user.profile_pic) {
+        if (extendedProfile.profile_pic) {
             const picEl = document.getElementById('profilePicDisplay');
-            if (picEl) picEl.src = user.profile_pic;
-            profilePicBase64 = user.profile_pic;
+            if (picEl) picEl.src = extendedProfile.profile_pic;
+            profilePicBase64 = extendedProfile.profile_pic;
         }
     } catch (e) {
         console.error('loadUserProfile error', e);
@@ -2562,7 +2796,7 @@ async function saveProfile(event) {
 
     try {
         const profileData = {
-            customer_name: document.getElementById('profile_name').value,
+            name: document.getElementById('profile_name').value, // fixed property name
             phone: document.getElementById('profile_phone').value,
             address: document.getElementById('profile_address').value,
             profile_pic: profilePicBase64
@@ -2574,6 +2808,16 @@ async function saveProfile(event) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(profileData)
         });
+        
+        // Save extended data (address, profile pic) to localStorage since DB doesn't support them
+        const userCheck = await fetch(`${API}/checklogin`, { credentials: 'include' });
+        const userData = await userCheck.json();
+        if (userData.loggedIn) {
+            localStorage.setItem(`profile_${userData.user.id}`, JSON.stringify({
+                address: profileData.address,
+                profile_pic: profileData.profile_pic
+            }));
+        }
 
         const result = await response.json();
 

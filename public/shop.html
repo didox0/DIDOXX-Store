@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIDOXX Shop</title>
     <meta name="description" content="Shop DIDOXX premium streetwear. Minimal essentials, elevated outerwear, and modern footwear.">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body class="shop-page">
@@ -16,10 +16,12 @@
             <a href="index.html">Home</a>
             <a href="shop.html" class="active">Shop</a>
             <a href="purchases.html" class="auth-required" style="display:none;">Orders</a>
-            <a href="wishlist.html" class="auth-required" style="display:none;">Wishlist</a>
+            
+            <a href="dashboard.html" class="admin-only" style="display:none;">Dashboard</a>
             <a href="bag.html">Cart</a>
         </nav>
         <div class="nav-actions" id="navAuthActions">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu" style="display:none; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text); padding:0 8px;">&#9776;</button>
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><span class="theme-icon">🌙</span></button>
             <div class="guest-only">
                 <a href="signin.html" class="text-link">Sign In</a>
@@ -49,53 +51,74 @@
         </section>
 
         <section class="section-block">
+            <div class="shop-toolbar" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <p id="shopResultsMeta" style="margin:0; font-weight:600;">Loading collection…</p>
+                <div class="hero-actions" style="margin:0; display:flex; gap:12px;">
+                    <button class="button secondary" onclick="document.getElementById('filterPanel').classList.toggle('active')">
+                        <span class="icon">⚲</span> Filters
+                    </button>
+                    <button class="button btn-primary" onclick="loadShopProducts()">Refresh</button>
+                </div>
+            </div>
+
             <div class="shop-layout">
-                <aside class="filter-panel">
-    <h3>Filters</h3>
-    <label for="shopSearch">Search styles</label>
-    <input id="shopSearch" type="search" placeholder="Search look" oninput="filterShopProducts()">
-
-    <label>Category</label>
-    <div class="filter-row" id="categoryFilters">
-        <button class="filter-pill active" type="button" data-category="All" onclick="selectShopCategory('All', this)">All</button>
-        <button class="filter-pill" type="button" data-category="Hoodies" onclick="selectShopCategory('Hoodies', this)">Hoodies</button>
-        <button class="filter-pill" type="button" data-category="Tees" onclick="selectShopCategory('Tees', this)">Tees</button>
-        <button class="filter-pill" type="button" data-category="Jeans" onclick="selectShopCategory('Jeans', this)">Jeans</button>
-        <button class="filter-pill" type="button" data-category="Sneakers" onclick="selectShopCategory('Sneakers', this)">Sneakers</button>
-        <button class="filter-pill" type="button" data-category="Accessories" onclick="selectShopCategory('Accessories', this)">Accessories</button>
+                <aside class="filter-panel" id="filterPanel" style="display:none; margin-bottom: 32px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0;">Filters</h3>
+        <button class="icon-button" onclick="document.getElementById('filterPanel').classList.remove('active')" aria-label="Close filters">✕</button>
     </div>
+    <div class="filter-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;">
+        <div>
+            <label for="shopSearch">Search styles</label>
+            <input id="shopSearch" type="search" placeholder="Search look" oninput="filterShopProducts()">
+        </div>
 
-    <label for="brandFilters">Brand</label>
-    <div class="filter-row" id="brandFilters"></div>
+        <div>
+            <label>Category</label>
+            <div class="filter-row" id="categoryFilters">
+                <button class="filter-pill active" type="button" data-category="All" onclick="selectShopCategory('All', this)">All</button>
+                <button class="filter-pill" type="button" data-category="Hoodies" onclick="selectShopCategory('Hoodies', this)">Hoodies</button>
+                <button class="filter-pill" type="button" data-category="Tees" onclick="selectShopCategory('Tees', this)">Tees</button>
+                <button class="filter-pill" type="button" data-category="Jeans" onclick="selectShopCategory('Jeans', this)">Jeans</button>
+                <button class="filter-pill" type="button" data-category="Sneakers" onclick="selectShopCategory('Sneakers', this)">Sneakers</button>
+                <button class="filter-pill" type="button" data-category="Accessories" onclick="selectShopCategory('Accessories', this)">Accessories</button>
+            </div>
+        </div>
 
-    <label for="priceSlider">Price</label>
-    <input id="priceSlider" type="range" min="0" max="500" step="10" value="500" oninput="filterShopProducts()">
-    <span id="priceValue">$0 – $500</span>
+        <div>
+            <label for="brandFilters">Brand</label>
+            <div class="filter-row" id="brandFilters"></div>
+        </div>
 
-    <label for="sizeFilters">Size</label>
-    <div class="filter-row" id="sizeFilters"></div>
+        <div>
+            <label for="priceSlider">Price</label>
+            <input id="priceSlider" type="range" min="0" max="500" step="10" value="500" oninput="filterShopProducts()">
+            <span id="priceValue">$0 – $500</span>
+        </div>
 
-    <label for="colorFilters">Color</label>
-    <div class="filter-row" id="colorFilters"></div>
+        <div>
+            <label for="sizeFilters">Size</label>
+            <div class="filter-row" id="sizeFilters"></div>
+        </div>
 
-    <label for="sortSelect">Sort</label>
-    <select id="sortSelect" onchange="filterShopProducts()">
-        <option value="newest">Newest</option>
-        <option value="price-asc">Price: Low to High</option>
-        <option value="price-desc">Price: High to Low</option>
-        <option value="popularity">Popularity</option>
-    </select>
-</aside>
+        <div>
+            <label for="colorFilters">Color</label>
+            <div class="filter-row" id="colorFilters"></div>
+        </div>
 
-                <div>
-    <div class="shop-toolbar">
-        <p id="shopResultsMeta">Loading collection…</p>
-        <div class="hero-actions">
-            <button class="button btn-primary" onclick="loadShopProducts()">Refresh</button>
-            <button class="button secondary" onclick="window.location.href='index.html'">Back</button>
+        <div>
+            <label for="sortSelect">Sort</label>
+            <select id="sortSelect" onchange="filterShopProducts()">
+                <option value="newest">Newest</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="popularity">Popularity</option>
+            </select>
         </div>
     </div>
-    <div id="productGrid" class="product-grid">
+</aside>
+
+                <div id="productGrid" class="product-grid">
         <!-- Skeleton placeholders while loading -->
         <div class="skeleton-card">
             <div class="skeleton-img" style="height:200px; margin-bottom:12px;"></div>
@@ -148,7 +171,7 @@
                     </div>
                     <div class="hero-actions">
                         <button class="button btn-primary" id="quickViewAddButton">Add to Cart</button>
-                        <button class="button secondary" id="quickViewWishlistButton">Add to Wishlist</button>
+                        
                     </div>
                 </div>
             </div>

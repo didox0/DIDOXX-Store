@@ -9,7 +9,7 @@
     <meta property="og:title" content="DIDOXX | Premium Streetwear">
     <meta property="og:description" content="Luxury streetwear for the modern wardrobe. Shop the latest premium collection from DIDOXX.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body class="page-shell home-page">
@@ -19,10 +19,12 @@
             <a href="index.html" class="active">Home</a>
             <a href="shop.html">Shop</a>
             <a href="purchases.html" class="auth-required" style="display:none;">Orders</a>
-            <a href="wishlist.html" class="auth-required" style="display:none;">Wishlist</a>
+            
+            <a href="dashboard.html" class="admin-only" style="display:none;">Dashboard</a>
             <a href="bag.html">Cart</a>
         </nav>
         <div class="nav-actions" id="navAuthActions">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu" style="display:none; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text); padding:0 8px;">&#9776;</button>
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><span class="theme-icon">🌙</span></button>
             <div class="guest-only">
                 <a href="signin.html" class="text-link">Sign In</a>
@@ -207,7 +209,7 @@
                     </div>
                     <div class="hero-actions">
                         <button class="button btn-primary" id="quickViewAddButton">Add to Cart</button>
-                        <button class="button secondary" id="quickViewWishlistButton">Add to Wishlist</button>
+                        
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIDOXX Product | Premium Fashion</title>
     <meta name="description" content="View premium DIDOXX product details, pricing, size options, and reviews.">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
     <!-- medium-zoom for image zoom effect -->
     <script src="https://unpkg.com/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script>
 </head>
@@ -16,10 +16,12 @@
             <a href="index.html">Home</a>
             <a href="shop.html" class="active">Shop</a>
             <a href="purchases.html" class="auth-required" style="display:none;">Orders</a>
-            <a href="wishlist.html" class="auth-required" style="display:none;">Wishlist</a>
+            
+            <a href="dashboard.html" class="admin-only" style="display:none;">Dashboard</a>
             <a href="bag.html">Cart</a>
         </nav>
         <div class="nav-actions" id="navAuthActions">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu" style="display:none; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text); padding:0 8px;">&#9776;</button>
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><span class="theme-icon">🌙</span></button>
             <div class="guest-only">
                 <a href="signin.html" class="text-link">Sign In</a>

@@ -107,6 +107,7 @@ input,
 select,
 textarea {
     font: inherit;
+    color: inherit;
 }
 
 a {
@@ -507,7 +508,7 @@ button {
     margin: 0 0 8px;
     font-size: 0.95rem;
     font-weight: 600;
-    color: rgba(255,255,255,0.8);
+    color: var(--secondary-text);
 }
 
 .stat-card p {
@@ -600,7 +601,7 @@ button {
 
 .button.secondary {
     background: transparent;
-    color: var(--text);
+    color: var(--text) !important;
     border: 1px solid var(--border);
 }
 
@@ -636,7 +637,7 @@ button {
 .shop-hero-copy p {
     margin: 0;
     max-width: 540px;
-    color: rgba(255,255,255,0.82);
+    color: var(--secondary-text);
     line-height: 1.8;
 }
 
@@ -659,10 +660,19 @@ button {
 }
 
 .shop-layout {
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    gap: 24px;
-    align-items: start;
+    display: block;
+}
+
+.filter-panel {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    position: relative;
+    box-shadow: var(--shadow-soft);
+}
+.filter-panel.active {
+    display: block !important;
 }
 
 .shop-toolbar {
@@ -752,17 +762,24 @@ button {
     padding: 10px 16px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    color: var(--muted);
+    color: var(--text);
+    opacity: 0.7;
     background: transparent;
     font-size: 0.85rem;
     cursor: pointer;
-    transition: background var(--transition), transform var(--transition), border-color var(--transition);
+    transition: background var(--transition), transform var(--transition), border-color var(--transition), opacity var(--transition);
+}
+
+.filter-panel .filter-pill:hover {
+    opacity: 1;
+    border-color: var(--text);
 }
 
 .filter-panel .filter-pill.active {
     background: var(--accent);
     color: var(--button-text);
     border-color: var(--accent);
+    opacity: 1;
 }
 
 .cart-sheet {
@@ -1423,9 +1440,32 @@ button {
 
 @media (max-width: 760px) {
     .top-nav { flex-wrap: wrap; gap: 16px; }
-    .top-nav .nav-links { flex-wrap: wrap; gap: 14px; }
+    .top-nav .nav-links { 
+        display: none; 
+        width: 100%; 
+        flex-direction: column; 
+        background: var(--surface);
+        padding: 16px;
+        border-radius: 12px;
+        position: absolute;
+        top: 60px;
+        left: 16px;
+        right: 16px;
+        box-shadow: var(--shadow);
+        z-index: 50;
+    }
+    .top-nav .nav-links.active {
+        display: flex;
+    }
+    .mobile-menu-toggle {
+        display: block !important;
+    }
     .hero { min-height: 80vh; }
     .hero-title { font-size: clamp(2.8rem, 10vw, 4.4rem); }
+    .hero-actions { flex-direction: column; width: 100%; }
+    .hero-actions .button { width: 100%; justify-content: center; }
+    .hero-stack { position: relative; gap: 32px; flex-direction: column; }
+    .hero-panel { margin: 0; }
     .section-heading { flex-direction: column; align-items: flex-start; }
     .product-grid { grid-template-columns: 1fr; }
     .brand-card { padding: 20px; }

@@ -27,6 +27,13 @@ function toggleTheme() {
     updateThemeIcons();
 }
 
+function toggleMobileMenu() {
+    const navLinks = document.getElementById('mainNavLinks');
+    if (navLinks) {
+        navLinks.classList.toggle('active');
+    }
+}
+
 function updateThemeIcons() {
     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
     const icons = document.querySelectorAll('.theme-toggle .theme-icon');
@@ -42,21 +49,31 @@ function updateThemeIcons() {
         const authRequiredLinks = document.querySelectorAll('.auth-required');
         const guestOnly = document.querySelectorAll('.guest-only');
         const memberOnly = document.querySelectorAll('.member-only');
+        const adminOnly = document.querySelectorAll('.admin-only');
         const navUserName = document.getElementById('navUserName');
 
         if (userData.loggedIn) {
             authRequiredLinks.forEach(el => el.style.display = 'inline-block');
             guestOnly.forEach(el => el.style.display = 'none');
             memberOnly.forEach(el => el.style.display = 'flex');
+            isAdminUser = userData.user && userData.user.role === 'admin';
+            adminOnly.forEach(el => el.style.display = isAdminUser ? 'inline-block' : 'none');
+            
             if (navUserName) {
                 navUserName.textContent = userData.user ? (userData.user.name || 'Member') : 'Member';
+            }
+            
+            if (!isAdminUser && window.location.pathname.includes('dashboard.html')) {
+                window.location.href = 'index.html';
             }
         } else {
             authRequiredLinks.forEach(el => el.style.display = 'none');
             guestOnly.forEach(el => el.style.display = 'block');
             memberOnly.forEach(el => el.style.display = 'none');
+            adminOnly.forEach(el => el.style.display = 'none');
+            isAdminUser = false;
             
-            const protectedPages = ['account.html', 'purchases.html', 'wishlist.html'];
+            const protectedPages = ['account.html', 'purchases.html', 'dashboard.html'];
             if (protectedPages.some(page => window.location.pathname.includes(page))) {
                 window.location.href = 'signin.html';
             }
@@ -272,7 +289,7 @@ function renderProductCards(container, products) {
                     <div class="product-actions">
                         <button class="action-button" onclick="window.location.href='product.html?id=${productId}'" aria-label="View details">🔎</button>
                         <button class="action-button" onclick="openQuickView(${JSON.stringify(product).replace(/'/g, "&#39;")})" aria-label="Quick view">👁</button>
-                        <button class="action-button" onclick="addToCart(${productId}, '${escapeHtml(product.name)}', ${salePrice})" aria-label="Add to cart">🛒</button>
+                        <button class="action-button" onclick="addToCart(${productId}, '${escapeHtml(product.name)}', ${salePrice}, '${image}')" aria-label="Add to cart">🛒</button>
                     </div>
                 </div>
                 <div class="product-meta">
@@ -403,12 +420,8 @@ function openQuickView(product) {
     colors.innerHTML = colorOptions.map(color => `<button class="selector-pill">${escapeHtml(color.trim())}</button>`).join('');
 
     addButton.onclick = () => {
-        addToCart(product.product_id || product.id, product.name, salePrice);
-        closeQuickView();
-    };
-
-    wishlistButton.onclick = () => {
-        alert(`${product.name} added to wishlist.`);
+        const imageSrc = product.images || product.image_url || 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80';
+        addToCart(product.product_id || product.id, product.name, salePrice, imageSrc);
         closeQuickView();
     };
 
@@ -472,8 +485,7 @@ async function loadProductDetails() {
                         <div class="selector-list">${colors.map(color => `<button class="selector-pill">${escapeHtml(color.trim())}</button>`).join('')}</div>
                     </div>
                     <div class="hero-actions">
-                        <button class="button btn-primary" onclick="addToCart(${product.product_id || product.id}, '${escapeHtml(product.name)}', ${salePrice}); showToast('Added to cart');">Add to Cart</button>
-                        <button class="button secondary" onclick="showToast('Saved to wishlist')">Save</button>
+                        <button class="button btn-primary" onclick="addToCart(${product.product_id || product.id}, '${escapeHtml(product.name)}', ${salePrice}, '${image}'); showToast('Added to cart');">Add to Cart</button>
                     </div>
                     <div class="spec-grid">
                         <div><strong>Brand</strong><span>${escapeHtml(product.brand_name || 'DIDOXX')}</span></div>
@@ -885,7 +897,6 @@ function renderCartItems() {
                         <button aria-label="Increase quantity" onclick="adjustQuantity('${item.id}', 1)">+</button>
                     </div>
                     <button class="button secondary" onclick="removeCartItem('${item.id}')">Remove</button>
-                    <button class="button secondary" onclick="saveForLater('${item.id}')">Save for later</button>
                 </div>
             </div>
         </div>`;
@@ -914,18 +925,6 @@ function removeCartItem(itemId) {
     showToast('Item removed from cart');
 }
 
-function saveForLater(itemId) {
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const idx = cart.findIndex(i => String(i.id) === String(itemId));
-    if (idx === -1) return;
-    const item = cart.splice(idx, 1)[0];
-    persistCart(cart);
-    const saved = JSON.parse(localStorage.getItem('savedCart')) || [];
-    saved.push(item);
-    localStorage.setItem('savedCart', JSON.stringify(saved));
-    renderCartItems();
-    showToast('Item saved for later');
-}
 
 function applyCoupon() {
     const codeEl = document.getElementById('couponCode');
@@ -1375,7 +1374,8 @@ async function deleteFood(id) {
 function addToCart(
     id,
     name,
-    price
+    price,
+    image = ''
 ) {
 
     let cart =
@@ -1402,7 +1402,8 @@ function addToCart(
             id,
             name,
             price,
-            quantity: 1
+            quantity: 1,
+            image
 
         });
 
@@ -1428,123 +1429,6 @@ function addToCart(
 
 
 
-
-// ======================================
-// LOAD CART
-// ======================================
-
-function loadCart() {
-
-    updateCartCount();
-
-    const cartItems =
-        document.getElementById(
-            'cartItems'
-        );
-
-    const cartTotal =
-        document.getElementById(
-            'cartTotal'
-        );
-
-
-    if (!cartItems) return;
-
-
-    let cart =
-        JSON.parse(
-            localStorage.getItem('cart')
-        ) || [];
-
-
-    cartItems.innerHTML = '';
-
-    let total = 0;
-
-
-    if (cart.length === 0) {
-
-        cartItems.innerHTML = `
-
-        <div class="food-card">
-
-            <h2>
-                Cart Is Empty
-            </h2>
-
-        </div>
-
-        `;
-
-        cartTotal.innerHTML = '';
-
-        return;
-
-    }
-
-
-    cart.forEach((item, index) => {
-
-        const itemTotal =
-            item.price * item.quantity;
-
-        total += itemTotal;
-
-
-        cartItems.innerHTML += `
-
-        <div class="food-card">
-
-            <h2>
-                ${item.name}
-            </h2>
-
-            <p>
-                Price:
-                ₹${item.price}
-            </p>
-
-            <p>
-
-                Quantity:
-
-                <button
-                onclick="decreaseQuantity(${index})">
-                    -
-                </button>
-
-                ${item.quantity}
-
-                <button
-                onclick="increaseQuantity(${index})">
-                    +
-                </button>
-
-            </p>
-
-            <p>
-                Total:
-                ₹${itemTotal}
-            </p>
-
-            <button
-            onclick="removeCartItem(${index})">
-
-                Remove
-
-            </button>
-
-        </div>
-
-        `;
-
-    });
-
-
-    cartTotal.innerHTML =
-        `<h2>Total: ₹${total}</h2>`;
-
-}
 
 
 async function loadCartDeliveryDetails() {
@@ -1574,104 +1458,7 @@ async function loadCartDeliveryDetails() {
 
 
 
-// ======================================
-// REMOVE CART ITEM
-// ======================================
 
-function removeCartItem(index) {
-
-    let cart =
-        JSON.parse(
-            localStorage.getItem('cart')
-        ) || [];
-
-
-    cart.splice(index, 1);
-
-
-    localStorage.setItem(
-
-        'cart',
-
-        JSON.stringify(cart)
-
-    );
-
-
-    loadCart();
-
-}
-
-
-
-
-// ======================================
-// INCREASE QUANTITY
-// ======================================
-
-function increaseQuantity(index) {
-
-    let cart =
-        JSON.parse(
-            localStorage.getItem('cart')
-        ) || [];
-
-
-    cart[index].quantity += 1;
-
-
-    localStorage.setItem(
-
-        'cart',
-
-        JSON.stringify(cart)
-
-    );
-
-
-    loadCart();
-
-}
-
-
-
-
-// ======================================
-// DECREASE QUANTITY
-// ======================================
-
-function decreaseQuantity(index) {
-
-    let cart =
-        JSON.parse(
-            localStorage.getItem('cart')
-        ) || [];
-
-
-    if (cart[index].quantity > 1) {
-
-        cart[index].quantity -= 1;
-
-    }
-    else {
-
-        cart.splice(index, 1);
-
-    }
-
-
-    localStorage.setItem(
-
-        'cart',
-
-        JSON.stringify(cart)
-
-    );
-
-
-    loadCart();
-
-}
 
 
 
@@ -2406,13 +2193,8 @@ async function initApp() {
     initCartPage();
     initCheckoutPage();
     initAdminPage();
-    loadFoods();
     loadAdminProducts();
     loadAdminBrands();
-    populateRestaurantSelect();
-    loadRestaurants();
-    loadCart();
-    loadCartDeliveryDetails();
     loadOrders();
 }
 
